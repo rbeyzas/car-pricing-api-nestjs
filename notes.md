@@ -31,3 +31,14 @@
 
 - typeorm repository api dokümantasyon: https://typeorm.io/repository-api
 - dto'lar kullanıcıdan gelen istekleri doğrulamak için kullanır.
+
+Locate the findOne method and update the return to look like this:
+
+findOne(id: number) {
+return this.repo.findOneBy({ id });
+}
+Locate the find method and update the return to look like this:
+
+find(email: string) {
+return this.repo.find({ where: { email } });
+}
