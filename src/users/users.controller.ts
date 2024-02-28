@@ -7,8 +7,10 @@ import {
   Param,
   Query,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 @Controller('auth')
 export class UsersController {
@@ -19,8 +21,12 @@ export class UsersController {
     this.usersService.create(body.email, body.password);
   }
   @Get(':id')
-  findUser(@Param('id') id: string) {
-    return this.usersService.findOne(parseInt(id));
+  async findUser(@Param('id') id: string) {
+    const user = await this.usersService.findOne(parseInt(id));
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
     // parseInt ile string olan id'yi number'a çevirdik.
     // bunun sebebi findOne methodunun id'sinin number olması.
   }
@@ -28,13 +34,13 @@ export class UsersController {
   findAllUsers(@Query('email') email: string) {
     return this.usersService.find(email);
   }
-  @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() body: Partial<CreateUserDto>) {
-    return this.usersService.update(parseInt(id), body);
-  }
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));
+  }
+  @Patch(':id')
+  updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return this.usersService.update(parseInt(id), body);
   }
 }
 // Body decoratorunu kullanma sebebimiz bu requestin body'sini almak istememiz. body içerisindeki bilgileri kullanacağız.
