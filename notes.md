@@ -42,3 +42,9 @@ Locate the find method and update the return to look like this:
 find(email: string) {
 return this.repo.find({ where: { email } });
 }
+
+- Get isteği ile bir kullanıcıyı döndürdüğümüz zaman kullanıcının şifresi de geliyor. bu gerçek uygulamada istemediğimiz bir durum.
+- Interceptor, nestin içinde bulunan ve gelen isteklere müdahale etmemizi sağlatan araçtır.
+- şifre konusu için custom interceptor kullanacağız.
+  ![interceptor](./public/images/interceptor.png)
+  ![custom interceptor](./public/images//custom-interceptor-class.png)

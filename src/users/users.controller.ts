@@ -8,10 +8,13 @@ import {
   Query,
   Delete,
   NotFoundException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptors';
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -20,8 +23,11 @@ export class UsersController {
   createUser(@Body() body: CreateUserDto) {
     this.usersService.create(body.email, body.password);
   }
+  //   @UseInterceptors(ClassSerializerInterceptor) // ClassSerializerInterceptor decorator'ü sayesinde response'ları otomatik olarak serialize edebiliriz. Yani response'ları otomatik olarak düzenleyebiliriz. serialize işlemi response'ları düzenlemek anlamına gelir.
+  @UseInterceptors(SerializeInterceptor) // custom interceptor. yukardaki custom değildi o yüzden yporum satırına aldık
   @Get(':id')
   async findUser(@Param('id') id: string) {
+    console.log('Handler is running');
     const user = await this.usersService.findOne(parseInt(id));
     if (!user) {
       throw new NotFoundException('User not found');
